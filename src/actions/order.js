@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { CART_EMPTY, ORDER_CREATE_SUCCESS, ORDER_CREATE_REQUEST, ORDER_CREATE_FAIL, ORDER_DETAILS_REQUEST, ORDER_DETAILS_SUCCESS, ORDER_DETAILS_FAIL, ORDER_PAY_REQUEST, ORDER_PAY_SUCCESS, ORDER_PAY_FAIL, MY_ORDER_LIST_REQUEST, MY_ORDER_LIST_FAIL, MY_ORDER_LIST_SUCCESS, ORDERS_LIST_REQUEST, ORDERS_LIST_SUCCESS, ORDERS_LIST_FAIL, ORDER_DELETE_REQUEST, ORDER_DELETE_SUCCESS, ORDER_DELETE_FAIL, ORDER_DELIVER_REQUEST, ORDER_DELIVER_SUCCESS, ORDER_DELIVER_FAIL } from './types'
 import { api } from '..'
 
@@ -6,7 +5,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
     dispatch({ type: ORDER_CREATE_REQUEST, payload: order })
     try {
         const { userSignInReducer: { userInfo } } = getState()
-        const request = await axios.post("/api/order", order, {
+        const request = await api.post("/api/order", order, {
             headers: {
                 authorization: `Bearer ${userInfo.data.token}`
             }

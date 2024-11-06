@@ -9,9 +9,6 @@ import {
 } from './types'
 import { api } from '..'
 
-axios.create({ baseURL: 'http://localhost:5000' })
-
-
 export const getProducts = () => async (dispatch) => {
     dispatch({ type: GET_PRODUCTS_REQUEST })
     try {
