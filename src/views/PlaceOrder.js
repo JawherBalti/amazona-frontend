@@ -27,12 +27,14 @@ export default function PlaceOrder(props) {
     const placeOrderHandler = () => {
         dispatch(createOrder({ ...cart, orderItems: cart.cartItems }))
     }
+
     useEffect(() => {
         if (success) {
             props.history.push(`/order/${order.data.order._id}`)
             dispatch({ type: ORDER_CREATE_RESET })
         }
     }, [dispatch, success, order, props.history])
+    
     return (
         <div>
             <CheckoutSteps step1 step2 step3 step4></CheckoutSteps>
@@ -41,7 +43,7 @@ export default function PlaceOrder(props) {
                     <ul>
                         <li>
                             <div className="card card-body">
-                                <h2>Shipping</h2>
+                                <h1>Shipping</h1>
                                 <p>
                                     <strong>Name:</strong> {cart.shippingAddress.name} <br />
                                     <strong>Address:</strong> {cart.shippingAddress.address},
@@ -49,19 +51,21 @@ export default function PlaceOrder(props) {
                                     {cart.shippingAddress.city}, 
                                     {cart.shippingAddress.country}
                                 </p>
+                                <Link to="/shipping">Edit</Link>
                             </div>
                         </li>
                         <li>
                             <div className="card card-body">
-                                <h2>Payment</h2>
+                                <h1>Payment</h1>
                                 <p>
                                     <strong>Method:</strong> {cart.paymentMethod} <br />
                                 </p>
+                                <Link to="/payment">Edit</Link>
                             </div>
                         </li>
                         <li>
                             <div className="card card-body">
-                                <h2>Order Items</h2>
+                                <h1>Order Items</h1>
                                 <ul>
                                     {cart.cartItems.map(item => (
                                         <li key={item.product}>
