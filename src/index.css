@@ -128,11 +128,18 @@ h2 {
 
 a {
   text-decoration: none;
+  color: #2020a0;
+}
+
+a:visited {
+  color: #2020a0;
 }
 
 a:hover {
   color: #ff8000;
 }
+
+
 
 ul {
   padding: 0;
@@ -183,6 +190,16 @@ header a {
   /*every a inside header*/
   color: #ffffff;
   padding: 1rem;
+}
+
+header a:visited {
+  /*every a inside header*/
+  color: #ffffff;
+}
+
+header a:hover {
+  /*every a inside header*/
+  color: #ff8000
 }
 
 a.brand {
