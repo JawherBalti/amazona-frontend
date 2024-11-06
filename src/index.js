@@ -11,6 +11,7 @@ import {thunk} from 'redux-thunk'
 import promiseMiddleware from 'redux-promise';
 import reducer from './reducers'
 import axios from 'axios';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 <link
 rel="stylesheet"
@@ -30,7 +31,7 @@ const initialState = {
   cartReducer: {
     cartItems: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [],
     shippingAddress: localStorage.getItem('shippingAddress') ? JSON.parse(localStorage.getItem('shippingAddress')) : {},
-    paymentMethod: "PayPal"
+    paymentMethod: localStorage.getItem('paymentMethod') ? localStorage.getItem('paymentMethod') : "Paypal"
   }
 }
 ReactDOM.render(
@@ -43,7 +44,9 @@ ReactDOM.render(
     )}
   >
     <BrowserRouter>
+    <PayPalScriptProvider deferLoading={true}>
       <App />
+    </PayPalScriptProvider>
     </BrowserRouter>
   </Provider >,
   document.getElementById('root')
