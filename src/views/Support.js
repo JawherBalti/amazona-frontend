@@ -40,8 +40,6 @@ export default function Support(props) {
         if (!user) {
             dispatch(userDetailss(userInfo.data.user._id))
         } else {
-            console.log(users);
-
             if (!socket) { //prevents infinite connections
                 const sk = socketIOClient(ENDPOINT);
                 setSocket(sk);

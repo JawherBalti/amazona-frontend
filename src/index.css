@@ -92,6 +92,19 @@ footer {
   color: #616161;
 }
 
+.chat-room {
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-container {
+  flex:0.25
+}
+
+.chat {
+  flex:0.7
+}
+
 .grid-container {
   display: grid;
   grid-template-areas: "header" "main" "footer";
@@ -292,13 +305,26 @@ img.large {
 }
 
 /*RATING*/
-.rating span {
+
+.rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px
+}
+
+.rating div {
+  display: flex;
+  align-items: center;
+}
+
+.rating div span {
   /*all spans inside rating*/
   color: #f0c040;
   margin: 0.1rem;
 }
 
-.rating span:last-child {
+.rating > span:last-child {
   color: #404040;
 }
 
