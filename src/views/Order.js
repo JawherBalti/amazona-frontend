@@ -36,7 +36,6 @@ export default function Order(props) {
     } else {
       const addPayPalScript = async () => {
         const { data: clientId } = await api.get("/api/config/paypal");
-        console.log(clientId);
 
         paypalDispatch({
           type: "resetOptions",
@@ -69,8 +68,8 @@ export default function Order(props) {
     try {
       const paymentResult = await actions.order.capture();
       dispatch(payOrder(order, paymentResult)); // Dispatch payOrder to update the backend
-    } catch (error) {
-      console.error("Error in onApprove:", error);
+    } catch (err) {
+      console.log(err);
     }
   }
 

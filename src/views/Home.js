@@ -4,7 +4,6 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { useDispatch, useSelector } from 'react-redux'
 import { getProducts } from '../actions/products';
-import ChatBox from '../components/ChatBox';
 
 export default function Home() {
   const productList = useSelector(state => state.productsListReducer)

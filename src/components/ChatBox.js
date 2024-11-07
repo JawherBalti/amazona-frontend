@@ -33,7 +33,6 @@ export default function ChatBox() {
         behavior: "smooth",
       });
     }
-    console.log(user)
 
     if (!user) {
       dispatch(userDetailss(userInfo?.data.user._id));
@@ -46,7 +45,6 @@ export default function ChatBox() {
       });
       socket.on("recieveMessage", (data) => {
         setMessages([...messages, { body: data.body, name: data.name }]);
-        console.log(messages);
       });
     }
   }, [dispatch, user, socket, messages]);
