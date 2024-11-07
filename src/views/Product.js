@@ -28,8 +28,8 @@ export default function Product(props) {
                             <div className="col-2">
                                 <img className="large" src={product.image} alt={product.name} />
                             </div>
-                            <div className="col-1">
-                                <ul>
+                            <div className="col-1 card">
+                                <ul className='card-body'>
                                     <li>
                                         <h1>{product.name}</h1>
                                     </li>
