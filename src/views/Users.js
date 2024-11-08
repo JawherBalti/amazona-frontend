@@ -72,7 +72,7 @@ export default function Users(props) {
 
     return (
         <div>
-            <div>Users</div>
+            <h1>Users</h1>
             {loading ? <LoadingBox></LoadingBox> :
                 error ? <MessageBox variant="danger">{error}</MessageBox> :
                     <table className="table">
