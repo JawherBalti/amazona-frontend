@@ -60,9 +60,9 @@ export default function OrderDeliver(props) {
                 </p>
                 {errorDeliver ? (
                   <MessageBox variant="danger">{errorDeliver}</MessageBox>
-                ) : order.isDelivered ? (
+                ) : order.isDelivered && order.deliveredAt ? (
                   <MessageBox variant="success">
-                    Delivered at: {order.deliveredAt.substring(0, 10)}
+                    Delivered at: {order.deliveredAt?.substring(0, 10)}
                   </MessageBox>
                 ) : (
                   <MessageBox variant="danger">Not delivered</MessageBox>
@@ -75,9 +75,9 @@ export default function OrderDeliver(props) {
                 <p>
                   <strong>Method:</strong> {order.paymentMethod} <br />
                 </p>
-                {order.isPaid ? (
+                {order.isPaid && order.paidAt ? (
                   <MessageBox variant="success">
-                    Paid at: {order.paidAt.substring(0, 10)}
+                    Paid at: {order.paidAt?.substring(0, 10)}
                   </MessageBox>
                 ) : (
                   <MessageBox variant="danger">Not paid</MessageBox>
@@ -148,14 +148,14 @@ export default function OrderDeliver(props) {
                   </div>
                 </div>
               </li>
-              {order.isPaid && !order.isDelivered && (
+              {order.isPaid && !order.isDelivered ? (
                 <button
                   className="primary block"
                   onClick={() => deliverOrderHandler()}
                 >
                   Deliver
                 </button>
-              )}
+              ) : ""}
             </ul>
           </div>
         </div>

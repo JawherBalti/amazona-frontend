@@ -96,7 +96,7 @@ export default function Order(props) {
                   {order.shippingAddress.postalCode},
                   {order.shippingAddress.city},{order.shippingAddress.country}
                 </p>
-                {order.isDelivered ? (
+                {order.isDelivered && order.deliveredAt ? (
                   <MessageBox variant="success">
                     Delivered at: {order.deliveredAt.substring(0, 10)}
                   </MessageBox>

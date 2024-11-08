@@ -64,7 +64,7 @@ export default function Orders(props) {
 
     return (
         <div>
-            <div>Order history</div>
+            <h1>Order history</h1>
             {loading ? <LoadingBox></LoadingBox> :
                 error ? <MessageBox variant="danger">{error}</MessageBox> :
                     <table className="table">
@@ -84,8 +84,8 @@ export default function Orders(props) {
                                     <td>{order._id}</td>
                                     <td>{order.createdAt.substring(0, 10)}</td>
                                     <td>{order.totalPrice.toFixed(2)}</td>
-                                    <td>{order.isPaid ? order.paidAt.substring(0, 10) : "Not Paid"}</td>
-                                    <td>{order.isDelivered ? order.deliveredAt.substring(0, 10) : "Not Delivered"}</td>
+                                    <td>{order.isPaid && order.paidAt ? order.paidAt?.substring(0, 10) : "Not Paid"}</td>
+                                    <td>{order.isDelivered && order.deliveredAt ? order.deliveredAt?.substring(0, 10) : "Not Delivered"}</td>
                                     <td>
                                         <button type="button" className="small" onClick={() => { props.history.push(`/order/deliver/${order._id}`) }}>Details</button>
                                         <button type="button" className="small" onClick={() => deleteHandler(order._id)}>Delete</button>
