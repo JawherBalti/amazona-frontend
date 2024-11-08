@@ -97,20 +97,20 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="row">
-            <div className="card" style={{width:"45%"}}>
+            <div className="card" style={{ width: "100%" }}>
               <div className=" card-body">
                 <div>
-                  <h1>Sales</h1>
+                  <h1>Daily sales</h1>
                 </div>
                 {summary.dailyOrders.length === 0 ? (
                   <MessageBox>No Sale</MessageBox>
                 ) : (
                   <Chart
-                  options={{
-                    backgroundColor: "#f8f8f8",
-                    chartArea: { width: "80%", height: "80%" },
-                    legend: { position: "bottom" },
-                  }}
+                    options={{
+                      backgroundColor: "#f8f8f8",
+                      chartArea: { width: "80%", height: "80%" },
+                      legend: { position: "bottom" },
+                    }}
                     width="100%"
                     height="400px"
                     chartType="AreaChart"
@@ -123,10 +123,12 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
-            <div className="card" style={{width:"45%"}}>
+          </div>
+          <div className="row">
+            <div className="card" style={{ width: "45%" }}>
               <div className="card-body">
                 <div>
-                  <h1>Categories</h1>
+                  <h1>Total categories</h1>
                 </div>
                 {summary.productCategories.length === 0 ? (
                   <MessageBox>No Category</MessageBox>
@@ -144,6 +146,93 @@ export default function Dashboard() {
                     data={[
                       ["Category", "Products"],
                       ...summary.productCategories.map((x) => [x._id, x.count]),
+                    ]}
+                  ></Chart>
+                )}
+              </div>
+            </div>
+            <div className="card" style={{ width: "45%" }}>
+              <div className="card-body">
+                <div>
+                  <h1>Sales by category</h1>
+                </div>
+                {summary.productCategories.length === 0 ? (
+                  <MessageBox>No Category</MessageBox>
+                ) : (
+                  <Chart
+                    options={{
+                      backgroundColor: "#f8f8f8",
+                      chartArea: { width: "100%", height: "80%" },
+                      legend: { position: "bottom" },
+                    }}
+                    width="100%"
+                    height="400px"
+                    chartType="PieChart"
+                    loader={<div>Loading Chart...</div>}
+                    data={[
+                      ["Category", "Products"],
+                      ...summary.categorySales.map((x) => [
+                        x._id,
+                        x.totalCategorySales,
+                      ]),
+                    ]}
+                  ></Chart>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="card" style={{ width: "45%" }}>
+              <div className="card-body">
+                <div>
+                  <h1>Sales by quantity</h1>
+                </div>
+                {summary.productCategories.length === 0 ? (
+                  <MessageBox>No Category</MessageBox>
+                ) : (
+                  <Chart
+                    options={{
+                      backgroundColor: "#f8f8f8",
+                      chartArea: { width: "100%", height: "80%" },
+                      legend: { position: "bottom" },
+                    }}
+                    width="100%"
+                    height="400px"
+                    chartType="PieChart"
+                    loader={<div>Loading Chart...</div>}
+                    data={[
+                      ["Category", "Products"],
+                      ...summary.quantitySales.map((x) => [
+                        x._id,
+                        x.totalQuantity,
+                      ]),
+                    ]}
+                  ></Chart>
+                )}
+              </div>
+            </div>
+
+            <div className="card" style={{ width: "45%" }}>
+              <div className="card-body">
+                <div>
+                  <h1>Sales by product</h1>
+                </div>
+                {summary.productCategories.length === 0 ? (
+                  <MessageBox>No Category</MessageBox>
+                ) : (
+                  <Chart
+                    options={{
+                      backgroundColor: "#f8f8f8",
+                      chartArea: { width: "100%", height: "80%" },
+                      legend: { position: "bottom" },
+                    }}
+                    width="100%"
+                    height="400px"
+                    chartType="PieChart"
+                    loader={<div>Loading Chart...</div>}
+                    data={[
+                      ["Product", "Revenue"],
+                      ...summary.productSales.map((x) => [x._id, x.totalSales]),
                     ]}
                   ></Chart>
                 )}
