@@ -1,54 +1,56 @@
 import React from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-export default function Pagination({
-  ordersPerPage,
-  totalOrders,
-  paginate,
-  currentPage,
-  maxPageNumberLimit,
-  minPageNumberLimit,
-  handlePrevbtn,
-  handleNextbtn,
-}) {
-  const pageNumbers = [];
+export default function Pagination2({ page, pages, searchTerm, link }) {
+  const location = useHistory();
 
-  for (let i = 1; i <= Math.ceil(totalOrders / ordersPerPage); i++) {
-    pageNumbers.push(i);
-  }
-
-  const renderPageNumbers = pageNumbers.map((number) => {
-    if (number < maxPageNumberLimit + 1 && number > minPageNumberLimit) {
-      return (
-        <div
-          onClick={() => paginate(number)}
-          key={number}
-          className={
-            currentPage === number ? "active-page page-number" : "page-number"
-          }
-        >
-          {number}
-        </div>
-      );
+  const handlePaginate = (e) => {
+    const url = `/${link}?page=${e.target.innerHTML}`;
+    if (searchTerm) {
+      location.push(`${url}&searchTerm=${searchTerm}`);
     } else {
-      return null;
+      location.push(url);
     }
-  });
+  };
+  const handlePrevbtn = (e) => {
+    if(Number(page)<1) page = 1
+    const url = `/${link}?page=${Number(page)-1}`;
+    if (searchTerm) {
+      location.push(`${url}&searchTerm=${searchTerm}`);
+    } else {
+      location.push(url);
+    }
+  };
+  const handleNextbtn = (e) => {
+    if(Number(page)> pages) page = pages
+    const url = `/${link}?page=${Number(page) +1}`;
+    if (searchTerm) {
+      location.push(`${url}&searchTerm=${searchTerm}`);
+    } else {
+      location.push(url);
+    }
+  };
 
   return (
     <div className="row center" style={{ marginTop: "10px" }}>
       <button
-        onClick={handlePrevbtn}
-        disabled={currentPage === pageNumbers[0] ? true : false}
+        onClick={(e) => handlePrevbtn(e)}
+        disabled={Number(page)=== 1 ? true : false}
       >
         Prev
       </button>
-      {renderPageNumbers}
-      <button
-        onClick={handleNextbtn}
-        disabled={
-          currentPage === pageNumbers[pageNumbers.length - 1] ? true : false
-        }
-      >
+      {[...Array(pages).keys()].map((x) => (
+        <div
+          className={
+            x + 1 === Number(page) ? "active-page page-number" : "page-number"
+          }
+          key={x + 1}
+          onClick={(e) => handlePaginate(e)}
+        >
+          {x + 1}
+        </div>
+      ))}
+      <button onClick={handleNextbtn} disabled={Number(page) === pages ? true : false}>
         Next
       </button>
     </div>
