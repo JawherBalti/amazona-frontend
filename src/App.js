@@ -27,6 +27,8 @@ import {
 } from "react-router-dom/cjs/react-router-dom.min";
 import Dashboard from "./views/Dashboard";
 import Products from "./views/Products";
+import EditProduct from "./views/EditProduct";
+import CreateProduct from "./views/CreateProduct";
 
 function App() {
   const cart = useSelector((state) => state.cartReducer);
@@ -122,7 +124,9 @@ function App() {
         <Route exact path="/users" component={Users}></Route>
         <Route exact path="/support" component={Support}></Route>
         <Route exact path="/dashboard" component={Dashboard}></Route>
+        <Route exact path="/createProduct" component={CreateProduct}></Route>
         <Route exact path="/products" component={Products}></Route>
+        <Route exact path="/products/:id" component={EditProduct}></Route>
         <Route
           exact
           path="/activate/:token"
