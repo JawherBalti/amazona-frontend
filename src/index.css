@@ -20,6 +20,10 @@ footer {
   position: relative;
 }
 
+.mb-3 {
+  margin-bottom: 15px;
+}
+
 .header-box {
   display: flex;
   padding: 10px;
@@ -272,12 +276,14 @@ img.small {
 img.medium {
   /* every image with class medium*/
   max-width: 29rem;
-  width: 100%;
+  width: 300px;
+  height: 300px;
 }
 
 img.large {
   max-width: 46rem;
   width: 100%;
+  height: 80vh;
   border: 0.1rem #c0c0c0 solid;
 }
 
