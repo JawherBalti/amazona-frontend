@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-export default function Pagination2({ page, pages, searchTerm, link }) {
+export default function Pagination({ page, pages, searchTerm, link }) {
   const location = useHistory();
 
   const handlePaginate = (e) => {
