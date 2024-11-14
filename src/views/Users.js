@@ -1,117 +1,61 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { USER_DETAILS_RESET } from "../actions/types";
+import { ADMIN_DELETE_RESET } from "../actions/types";
 import { getUsers, adminDeleteUser } from "../actions/user";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { api } from "..";
 import Pagination from "../components/Pagination";
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    
-    case "FETCH_REQUEST":
-      return { ...state, loading: true };
-    case "FETCH_SUCCESS":
-      return {
-        ...state,
-        users: action.payload.users,
-        page: action.payload.page,
-        pages: action.payload.pages,
-        countUsers: action.payload.countUsers,
-        loading: false,
-      };
-    case "FETCH_FAIL":
-      return { ...state, loading: false, error: action.payload };
-    case "SEARCH_USER":
-      return {
-        ...state,
-        searchUserId:
-          action.payload.users.length > 0 ? action.payload.users[0] : null,
-        searchResultsByName: [],
-        searchPage: action.payload.page,
-        searchPages: action.payload.pages,
-      };
-    case "CLEAR_SEARCH_RESULTS":
-      return {
-        ...state,
-        searchProductId: null,
-        searchResultsByName: [],
-        searchPage: 1,
-        searchPages: 1,
-      };
-    default:
-      return state;
-  }
-};
 
 export default function Users(props) {
   const [localSearchTerm, setLocalSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name"); // New state for sorting field
   const [order, setOrder] = useState("asc"); // New state for sorting order
 
-//   const usersReducer = useSelector((state) => state.getUsersReducer);
-//   const { error, users, loading } = usersReducer;
+  const usersReducer = useSelector((state) => state.getUsersReducer);
+  const {
+    users,
+    loading,
+    error,
+    pages,
+    searchUserId,
+    searchResultsByName,
+    searchPage,
+    searchPages,
+  } = usersReducer;
+
+  const deleteReducer = useSelector((state) => state.adminDeleteReducer);
+  const { loadingDelete, successDelete } = deleteReducer;
+
   const userSignIn = useSelector((state) => state.userSignInReducer);
   const { userInfo } = userSignIn;
 
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
+  const dispatch = useDispatch();
 
   const sp = new URLSearchParams(search);
   const page = sp.get("page") || 1;
   const searchTerm = sp.get("searchTerm");
-
-  const [
-    {
-      users,
-      loading,
-      error,
-      pages,
-      searchUserId,
-      searchResultsByName,
-      searchPage,
-      searchPages,
-    },
-    dispatch,
-  ] = useReducer(reducer, {
-    loading: true,
-    error: "",
-    searchUserId: null,
-    searchResultsByName: [],
-    searchPage: 1,
-    searchPages: 1,
-  });
 
   if (!userInfo) {
     props.history.push("/signin");
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        dispatch({ type: "FETCH_REQUEST" });
-        let url = `/api/user/getUsers?page=${page}&sortBy=${sortBy}&order=${order}`;
-        if (searchTerm) {
-          url += `&searchTerm=${searchTerm}`;
-        }
-        const { data } = await api.get(url, {
-          headers: { Authorization: `Bearer ${userInfo.data.token}` },
-        });
-        dispatch({ type: "FETCH_SUCCESS", payload: data });
-      } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: err.message });
-      }
-    };
-    fetchData();
-  }, [order, page, searchTerm, sortBy, userInfo]);
+    if (successDelete) {
+      dispatch({ type: ADMIN_DELETE_RESET });
+    } else {
+      dispatch(getUsers(page, sortBy, order, searchTerm));
+    }
+  }, [successDelete, order, page, searchTerm, sortBy, dispatch]);
 
   const updateHandler = (userId) => {
     props.history.push(`/profile/${userId}`);
   };
 
   const deleteHandler = (userId) => {
-    dispatch(adminDeleteUser(userId));
+    if (window.confirm("Are you sure? This action cannot be reversed."))
+      dispatch(adminDeleteUser(userId));
   };
 
   const handleSearch = async () => {
@@ -130,7 +74,7 @@ export default function Users(props) {
   const getDisplayUsers = () => {
     if (searchUserId) {
       return [searchUserId];
-    } else if (searchResultsByName.length > 0) {
+    } else if (searchResultsByName?.length > 0) {
       return searchResultsByName;
     } else {
       return users;
@@ -140,7 +84,7 @@ export default function Users(props) {
   const getCurrentPage = () => {
     return searchUserId
       ? 1
-      : searchResultsByName.length > 0
+      : searchResultsByName?.length > 0
       ? searchPage
       : page;
   };
@@ -148,7 +92,7 @@ export default function Users(props) {
   const getTotalPages = () => {
     return searchUserId
       ? 1
-      : searchResultsByName.length > 0
+      : searchResultsByName?.length > 0
       ? searchPages
       : pages;
   };
@@ -156,8 +100,8 @@ export default function Users(props) {
   return (
     <div>
       <h1>Users</h1>
-      <div className="row">
-        <div className="row" style={{ marginBottom: "20px" }}>
+      <div className="row mb-3">
+        <div className="row search">
           <input
             type="text"
             value={localSearchTerm}
@@ -169,7 +113,7 @@ export default function Users(props) {
             Search
           </button>
         </div>
-        <div>
+        <div className="order">
           <label>Sort By:</label>
           <select value={sortBy} onChange={handleSortChange}>
             <option value="name">Name</option>
@@ -181,12 +125,6 @@ export default function Users(props) {
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
           </select>
-          <button
-            className="primary mb-3"
-            onClick={() => props.history.push("/createProduct")}
-          >
-            Create product
-          </button>
         </div>
       </div>
       {loading ? (
@@ -236,16 +174,14 @@ export default function Users(props) {
           </tbody>
         </table>
       )}
-          {!searchUserId && searchResultsByName.length === 0 && (
-            <div>
-              <Pagination
-                page={getCurrentPage()}
-                pages={getTotalPages()}
-                searchTerm={searchTerm}
-                link="users"
-              />
-            </div>
-          )}
+      <div>
+        <Pagination
+          page={getCurrentPage()}
+          pages={getTotalPages()}
+          searchTerm={searchTerm}
+          link="users"
+        />
+      </div>
     </div>
   );
 }
