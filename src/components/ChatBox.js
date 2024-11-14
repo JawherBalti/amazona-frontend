@@ -66,7 +66,7 @@ export default function ChatBox() {
       setToggleSupport(true);
       const sk = socketIOClient(ENDPOINT, {
         withCredentials: true,
-        transports: ["websocket", "polling"], // Attempt WebSocket first, fallback to polling
+        transports: ["polling"], // Attempt WebSocket first, fallback to polling
     });    
       setSocket(sk);
     }
