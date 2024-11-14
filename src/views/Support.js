@@ -47,7 +47,9 @@ export default function Support(props) {
     } else {
       if (!socket) {
         //prevents infinite connections
-        const sk = socketIOClient(ENDPOINT);
+        const sk = socketIOClient(ENDPOINT, {
+          withCredentials: true
+        });
         setSocket(sk);
         sk.emit("onLogin", {
           _id: userInfo.data.user._id,

@@ -64,7 +64,9 @@ export default function ChatBox() {
       history.push("/signin");
     } else {
       setToggleSupport(true);
-      const sk = socketIOClient(ENDPOINT);
+      const sk = socketIOClient(ENDPOINT, {
+        withCredentials: true
+      });
       setSocket(sk);
     }
   };
