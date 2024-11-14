@@ -29,6 +29,7 @@ import Dashboard from "./views/Dashboard";
 import Products from "./views/Products";
 import EditProduct from "./views/EditProduct";
 import CreateProduct from "./views/CreateProduct";
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
   const cart = useSelector((state) => state.cartReducer);
@@ -112,21 +113,21 @@ function App() {
         <Route exact path="/register" component={Register}></Route>
         <Route exact path="/signin" component={Signin}></Route>
         <Route exact path="/product/:id" component={Product}></Route>
-        <Route exact path="/shipping" component={Shipping}></Route>
-        <Route exact path="/placeorder" component={PlaceOrder}></Route>
-        <Route exact path="/order/deliver/:id" component={OrderDeliver}></Route>
-        <Route exact path="/orderhistory" component={OrderHistory}></Route>
+        <PrivateRoute exact path="/order/:id" component={Order}></PrivateRoute>
+        <PrivateRoute exact path="/profile/:id" component={ProfileById}></PrivateRoute>
+        <PrivateRoute exact path="/orderhistory" component={OrderHistory}></PrivateRoute>
+        <PrivateRoute exact path="/shipping" component={Shipping}></PrivateRoute>
+        <PrivateRoute exact path="/placeorder" component={PlaceOrder}></PrivateRoute>
         <PrivateRoute exact path="/profile" component={Profile}></PrivateRoute>
-        <Route exact path="/payment" component={Payment}></Route>
-        <Route exact path="/order/:id" component={Order}></Route>
-        <Route exact path="/allOrders" component={Orders}></Route>
-        <Route exact path="/profile/:id" component={ProfileById}></Route>
-        <Route exact path="/users" component={Users}></Route>
-        <Route exact path="/support" component={Support}></Route>
-        <Route exact path="/dashboard" component={Dashboard}></Route>
-        <Route exact path="/createProduct" component={CreateProduct}></Route>
-        <Route exact path="/products" component={Products}></Route>
-        <Route exact path="/products/:id" component={EditProduct}></Route>
+        <PrivateRoute exact path="/payment" component={Payment}></PrivateRoute>
+        <AdminRoute exact path="/order/deliver/:id" component={OrderDeliver}></AdminRoute>
+        <AdminRoute exact path="/allOrders" component={Orders}></AdminRoute>
+        <AdminRoute exact path="/users" component={Users}></AdminRoute>
+        <AdminRoute exact path="/support" component={Support}></AdminRoute>
+        <AdminRoute exact path="/dashboard" component={Dashboard}></AdminRoute>
+        <AdminRoute exact path="/createProduct" component={CreateProduct}></AdminRoute>
+        <AdminRoute exact path="/products" component={Products}></AdminRoute>
+        <AdminRoute exact path="/products/:id" component={EditProduct}></AdminRoute>
         <Route
           exact
           path="/activate/:token"
