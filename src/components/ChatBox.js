@@ -21,7 +21,7 @@ export default function ChatBox() {
   const userSignIn = useSelector((state) => state.userSignInReducer);
   const { userInfo } = userSignIn;
   const userDetails = useSelector((state) => state.userDetailsReducer);
-  const { loading, error, user } = userDetails;
+  const { user } = userDetails;
 
   const dispatch = useDispatch();
 

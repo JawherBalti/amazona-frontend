@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { allOrderss, deleteOrder } from "../actions/order";
-import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { useLocation } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import { ORDER_DELETE_RESET } from "../actions/types";
 

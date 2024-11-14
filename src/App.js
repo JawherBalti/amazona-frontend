@@ -3,10 +3,9 @@ import Home from "./views/Home";
 import Product from "./views/Product";
 import Signin from "./views/Signin";
 import Register from "./views/Register";
-import { Route } from "react-router-dom";
+import { Route,Link, useLocation } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import Cart from "./views/Cart";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signout } from "./actions/user";
 import Shipping from "./views/Shipping";
@@ -22,9 +21,6 @@ import Orders from "./views/Orders";
 import ChatBox from "./components/ChatBox";
 import Support from "./views/Support";
 import OrderDeliver from "./views/OrderDeliver";
-import {
-  useLocation,
-} from "react-router-dom/cjs/react-router-dom.min";
 import Dashboard from "./views/Dashboard";
 import Products from "./views/Products";
 import EditProduct from "./views/EditProduct";
@@ -114,20 +110,48 @@ function App() {
         <Route exact path="/signin" component={Signin}></Route>
         <Route exact path="/product/:id" component={Product}></Route>
         <PrivateRoute exact path="/order/:id" component={Order}></PrivateRoute>
-        <PrivateRoute exact path="/profile/:id" component={ProfileById}></PrivateRoute>
-        <PrivateRoute exact path="/orderhistory" component={OrderHistory}></PrivateRoute>
-        <PrivateRoute exact path="/shipping" component={Shipping}></PrivateRoute>
-        <PrivateRoute exact path="/placeorder" component={PlaceOrder}></PrivateRoute>
+        <PrivateRoute
+          exact
+          path="/profile/:id"
+          component={ProfileById}
+        ></PrivateRoute>
+        <PrivateRoute
+          exact
+          path="/orderhistory"
+          component={OrderHistory}
+        ></PrivateRoute>
+        <PrivateRoute
+          exact
+          path="/shipping"
+          component={Shipping}
+        ></PrivateRoute>
+        <PrivateRoute
+          exact
+          path="/placeorder"
+          component={PlaceOrder}
+        ></PrivateRoute>
         <PrivateRoute exact path="/profile" component={Profile}></PrivateRoute>
         <PrivateRoute exact path="/payment" component={Payment}></PrivateRoute>
-        <AdminRoute exact path="/order/deliver/:id" component={OrderDeliver}></AdminRoute>
+        <AdminRoute
+          exact
+          path="/order/deliver/:id"
+          component={OrderDeliver}
+        ></AdminRoute>
         <AdminRoute exact path="/allOrders" component={Orders}></AdminRoute>
         <AdminRoute exact path="/users" component={Users}></AdminRoute>
         <AdminRoute exact path="/support" component={Support}></AdminRoute>
         <AdminRoute exact path="/dashboard" component={Dashboard}></AdminRoute>
-        <AdminRoute exact path="/createProduct" component={CreateProduct}></AdminRoute>
+        <AdminRoute
+          exact
+          path="/createProduct"
+          component={CreateProduct}
+        ></AdminRoute>
         <AdminRoute exact path="/products" component={Products}></AdminRoute>
-        <AdminRoute exact path="/products/:id" component={EditProduct}></AdminRoute>
+        <AdminRoute
+          exact
+          path="/products/:id"
+          component={EditProduct}
+        ></AdminRoute>
         <Route
           exact
           path="/activate/:token"

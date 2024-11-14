@@ -28,9 +28,9 @@ export default function Profile(props) {
         if (!user) {
             dispatch(userDetailss(userInfo.data.user._id))
         } else {
-            setName(userInfo.data.user.name) //should be user.name but its buggy
+            setName(userInfo.data.user.name)
         }
-    }, [dispatch, user, userInfo.data.user._id]) //do not add userInfo because when logout useEffect will trigger and userInfo is undefined which causes an error
+    }, [dispatch, user, userInfo])
 
     const submitHandler = (e) => {
         e.preventDefault()

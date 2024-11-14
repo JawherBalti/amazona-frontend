@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ADMIN_UPDATE_RESET, USER_DETAILS_RESET } from "../actions/types";
+import { ADMIN_UPDATE_RESET } from "../actions/types";
 import { adminUpdateUser, userDetailss } from "../actions/user";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 
 export default function ProfileById(props) {
   const userId = props.match.params.id;
-  console.log(userId);
 
   const [name, setName] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);

@@ -4,7 +4,7 @@ import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { myOrders } from "../actions/order";
 import Pagination from "../components/Pagination";
-import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function OrderHistory(props) {
   const [localSearchTerm, setLocalSearchTerm] = useState("");

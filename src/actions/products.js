@@ -1,4 +1,3 @@
-import axios from 'axios'
 import {
     GET_PRODUCTS_REQUEST,
     GET_PRODUCTS_FAIL,

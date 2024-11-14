@@ -49,7 +49,7 @@ export default function EditProduct(props) {
   const userSignIn = useSelector((state) => state.userSignInReducer);
   const { userInfo } = userSignIn;
 
-  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] = useReducer(reducer, {
+  const [{ loading, error, loadingUpdate }, dispatch] = useReducer(reducer, {
     loading: true,
     error: "",
   });

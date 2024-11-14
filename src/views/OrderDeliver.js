@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { detailsOrder, deliverOrder } from "../actions/order";
 import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from "../actions/types";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 export default function OrderDeliver(props) {
   const orderId = props.match.params.id;

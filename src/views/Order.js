@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { detailsOrder, payOrder } from "../actions/order";
 import { ORDER_PAY_RESET } from "../actions/types";
 import { api } from "..";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 export default function Order(props) {
