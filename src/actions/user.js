@@ -1,5 +1,5 @@
 import { api } from ".."
-import { USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_SIGNIN_FAIL, USER_SIGNIN_REQUEST, USER_SIGNIN_SUCCESS, USER_SIGNOUT, USER_UPDATE_REQUEST, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL, ACTIVATE_ACCOUNT_REQUEST, ACTIVATE_ACCOUNT_SUCCESS, ACTIVATE_ACCOUNT_FAIL, USERS_DETAILS_REQUEST, USERS_DETAILS_FAIL, USERS_DETAILS_SUCCESS, ADMIN_UPDATE_SUCCESS, ADMIN_UPDATE_FAIL, ADMIN_DELETE_REQUEST, ADMIN_DELETE_SUCCESS, ADMIN_DELETE_FAIL, USER_DETAILS_RESET } from "./types"
+import { USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_SIGNIN_FAIL, USER_SIGNIN_REQUEST, USER_SIGNIN_SUCCESS, USER_SIGNOUT, USER_UPDATE_REQUEST, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL, ACTIVATE_ACCOUNT_REQUEST, ACTIVATE_ACCOUNT_SUCCESS, ACTIVATE_ACCOUNT_FAIL, USERS_DETAILS_REQUEST, USERS_DETAILS_FAIL, USERS_DETAILS_SUCCESS, ADMIN_UPDATE_SUCCESS, ADMIN_UPDATE_FAIL, ADMIN_DELETE_REQUEST, ADMIN_DELETE_SUCCESS, ADMIN_DELETE_FAIL, USER_DETAILS_RESET, SEARCH_USER_SUCCESS } from "./types"
 
 export const register = (name, email, password) => async (dispatch) => {
     dispatch({ type: USER_REGISTER_REQUEST, payload: { name, email, password } })
@@ -41,14 +41,19 @@ export const signout = () => (dispatch) => {
     dispatch({ type: USER_DETAILS_RESET })
 }
 
-export const getUsers = () => async (dispatch, getState) => {
+export const getUsers = (page, sortBy, order, searchTerm) => async (dispatch, getState) => {
     dispatch({ type: USERS_DETAILS_REQUEST })
     const { userSignInReducer: { userInfo } } = getState()
     try {
-        const { data } = await api.get("/api/user/getusers", {
-            headers: { authorization: `Bearer ${userInfo.data.token}` }
-        })
-        dispatch({ type: USERS_DETAILS_SUCCESS, payload: data })
+        let url = `/api/user/getUsers?page=${page}&sortBy=${sortBy}&order=${order}`;
+        if (searchTerm) {
+          url += `&searchTerm=${searchTerm}`;
+        }
+        const { data } = await api.get(url, {
+          headers: { Authorization: `Bearer ${userInfo.data.token}` },
+        });
+        dispatch({ type: USERS_DETAILS_SUCCESS, payload: data }
+        )
     } catch (error) {
         dispatch({ type: USERS_DETAILS_FAIL, payload: error.response && error.response.data.message ? error.response.data.message : error.message })
     }
