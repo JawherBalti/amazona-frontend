@@ -49,7 +49,8 @@ export default function Support(props) {
         //prevents infinite connections
         const sk = socketIOClient(ENDPOINT, {
           withCredentials: true,
-        });
+          transports: ["websocket", "polling"], // Attempt WebSocket first, fallback to polling
+      });      
         setSocket(sk);
         sk.emit("onLogin", {
           _id: userInfo.data.user._id,
