@@ -1,135 +1,53 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
-import { api } from "..";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../components/Pagination";
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "FETCH_REQUEST":
-      return { ...state, loading: true };
-    case "FETCH_SUCCESS":
-      return {
-        ...state,
-        products: action.payload.products,
-        page: action.payload.page,
-        pages: action.payload.pages,
-        countProducts: action.payload.countProducts,
-        loading: false,
-      };
-    case "FETCH_FAIL":
-      return { ...state, loading: false, error: action.payload };
-    case "DELETE_REQUEST":
-      return { ...state, loadingDelete: true, successDelete: false };
-    case "DELETE_SUCCESS":
-      return {
-        ...state,
-        loadingDelete: false,
-        successDelete: true,
-      };
-    case "DELETE_FAIL":
-      return { ...state, loadingDelete: false, successDelete: false };
-    case "DELETE_RESET":
-      return { ...state, loadingDelete: false, successDelete: false };
-    case "SEARCH_PRODUCTS":
-      return {
-        ...state,
-        searchProductId:
-          action.payload.products.length > 0
-            ? action.payload.products[0]
-            : null,
-        searchResultsByName: [],
-        searchPage: action.payload.page,
-        searchPages: action.payload.pages,
-      };
-    case "CLEAR_SEARCH_RESULTS":
-      return {
-        ...state,
-        searchProductId: null,
-        searchResultsByName: [],
-        searchPage: 1,
-        searchPages: 1,
-      };
-    default:
-      return state;
-  }
-};
+import { deleteProduct, getAdminProducts } from "../actions/products";
+import { PRODUCT_DELETE_RESET } from "../actions/types";
 
 export default function Products(props) {
   const [localSearchTerm, setLocalSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name"); // New state for sorting field
   const [order, setOrder] = useState("asc"); // New state for sorting order
 
-  const [
-    {
-      loading,
-      error,
-      products,
-      pages,
-      loadingDelete,
-      successDelete,
-      searchProductId,
-      searchResultsByName,
-      searchPage,
-      searchPages,
-    },
-    dispatch,
-  ] = useReducer(reducer, {
-    loading: true,
-    error: "",
-    searchProductId: null,
-    searchResultsByName: [],
-    searchPage: 1,
-    searchPages: 1,
-  });
+  const productsReducer = useSelector((state) => state.adminProductsReducer);
+  const {
+    loading,
+    error,
+    products,
+    pages,
+    searchProductId,
+    searchResultsByName,
+    searchPage,
+    searchPages,
+  } = productsReducer;
+
+const deleteReducer = useSelector((state) => state.productDeleteReducer)
+const {loadingDelete, successDelete} = deleteReducer
 
   const userSignIn = useSelector((state) => state.userSignInReducer);
   const { userInfo } = userSignIn;
 
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
+  const dispatch = useDispatch();
 
   const sp = new URLSearchParams(search);
   const page = sp.get("page") || 1;
   const searchTerm = sp.get("searchTerm");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        dispatch({ type: "FETCH_REQUEST" });
-        let url = `/api/products/adminProducts?page=${page}&sortBy=${sortBy}&order=${order}`;
-        if (searchTerm) {
-          url += `&searchTerm=${searchTerm}`;
-        }
-        const { data } = await api.get(url, {
-          headers: { Authorization: `Bearer ${userInfo.data.token}` },
-        });
-        dispatch({ type: "FETCH_SUCCESS", payload: data });
-      } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: err.message });
-      }
-    };
     if (successDelete) {
-      dispatch({ type: "DELETE_RESET" });
+      dispatch({ type: PRODUCT_DELETE_RESET });
     } else {
-      fetchData();
+      dispatch(getAdminProducts(page, sortBy, order, searchTerm));
     }
-  }, [page, userInfo, sortBy, order, successDelete, searchTerm]);
+  }, [page, userInfo, sortBy, order, successDelete, searchTerm, dispatch]);
 
   const deleteHandler = async (product) => {
     if (window.confirm("Are you sure? This action cannot be reversed.")) {
-      try {
-        await api.delete(`/api/products/${product._id}`, {
-          headers: { Authorization: `Bearer ${userInfo.data.token}` },
-        });
-        dispatch({ type: "DELETE_SUCCESS" });
-      } catch (err) {
-        console.log(err);
-        dispatch({
-          type: "DELETE_FAIL",
-        });
-      }
+      dispatch(deleteProduct(product));
     }
   };
 
@@ -141,7 +59,7 @@ export default function Products(props) {
   const getDisplayProducts = () => {
     if (searchProductId) {
       return [searchProductId];
-    } else if (searchResultsByName.length > 0) {
+    } else if (searchResultsByName?.length > 0) {
       return searchResultsByName;
     } else {
       return products;
@@ -151,7 +69,7 @@ export default function Products(props) {
   const getCurrentPage = () => {
     return searchProductId
       ? 1
-      : searchResultsByName.length > 0
+      : searchResultsByName?.length > 0
       ? searchPage
       : page;
   };
@@ -159,7 +77,7 @@ export default function Products(props) {
   const getTotalPages = () => {
     return searchProductId
       ? 1
-      : searchResultsByName.length > 0
+      : searchResultsByName?.length > 0
       ? searchPages
       : pages;
   };
@@ -175,8 +93,8 @@ export default function Products(props) {
   return (
     <div>
       <h1>Products</h1>
-      <div className="row">
-        <div className="row" style={{ marginBottom: "20px" }}>
+      <div className="row mb-3">
+        <div className="row search">
           <input
             type="text"
             value={localSearchTerm}
@@ -188,7 +106,7 @@ export default function Products(props) {
             Search
           </button>
         </div>
-        <div>
+        <div className="order">
           <label>Sort By:</label>
           <select value={sortBy} onChange={handleSortChange}>
             <option value="name">Name</option>
@@ -201,7 +119,7 @@ export default function Products(props) {
             <option value="desc">Descending</option>
           </select>
           <button
-            className="primary mb-3"
+            className="primary"
             onClick={() => props.history.push("/createProduct")}
           >
             Create product
@@ -237,7 +155,7 @@ export default function Products(props) {
                   <td>{product.countInStock}</td>
                   <td>{product.category}</td>
                   <td>{product.brand}</td>
-                  <td>{product.createdAt.substring(0,10)}</td>
+                  <td>{product.createdAt.substring(0, 10)}</td>
                   <td>
                     <button
                       type="button"
@@ -260,16 +178,14 @@ export default function Products(props) {
               ))}
             </tbody>
           </table>
-          {!searchProductId && searchResultsByName.length === 0 && (
-            <div>
-              <Pagination
-                page={getCurrentPage()}
-                pages={getTotalPages()}
-                searchTerm={searchTerm}
-                link="products"
-              />
-            </div>
-          )}
+          <div>
+            <Pagination
+              page={getCurrentPage()}
+              pages={getTotalPages()}
+              searchTerm={searchTerm}
+              link="products"
+            />
+          </div>
         </>
       )}
     </div>
