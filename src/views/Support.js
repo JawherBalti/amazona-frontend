@@ -14,7 +14,7 @@ export default function Support(props) {
   //     ? "http://127.0.0.1:5000"
   //     : window.location.host;
 
-  const ENDPOINT = 'https://amazona-api.vercel.app'
+  const ENDPOINT = "https://amazona-api.vercel.app";
 
   const [socket, setSocket] = useState(null);
   const [users, setUsers] = useState([]);
@@ -47,7 +47,9 @@ export default function Support(props) {
     } else {
       if (!socket) {
         //prevents infinite connections
-        const sk = socketIOClient(ENDPOINT)
+        const sk = socketIOClient(ENDPOINT, {
+          withCredentials: true,
+        });
         setSocket(sk);
         sk.emit("onLogin", {
           _id: userInfo.data.user._id,
@@ -69,16 +71,18 @@ export default function Support(props) {
             // If the user doesn't exist in allUsers, add them with the updated data
             allUsers = [...allUsers, updatedUser];
           }
-          setUsers([...allUsers]);          
-        })
+          setUsers([...allUsers]);
+        });
         sk.on("listUsers", (updatedUsers) => {
-            allUsers = updatedUsers.map((user) => {
-              const existingUser = allUsers.find((u) => u._id === user._id);
-              return existingUser ? { ...user, unread: existingUser.unread } : user;
-            });
-            
-            setUsers([...allUsers]);
+          allUsers = updatedUsers.map((user) => {
+            const existingUser = allUsers.find((u) => u._id === user._id);
+            return existingUser
+              ? { ...user, unread: existingUser.unread }
+              : user;
           });
+
+          setUsers([...allUsers]);
+        });
         sk.on("selectUser", (user) => {
           allMessages = user.messages;
           setMessages(allMessages);
@@ -87,12 +91,11 @@ export default function Support(props) {
           if (allSelectedUser._id === data._id) {
             allMessages = [...allMessages, data];
           } else {
-              
-              const userExist = allUsers.find((user) => user._id === data._id);
-              if (userExist._id) {
-                  allUsers = allUsers.map((user) =>
-                    user._id === userExist._id ? { ...user, unread: true } : user
-                );
+            const userExist = allUsers.find((user) => user._id === data._id);
+            if (userExist._id) {
+              allUsers = allUsers.map((user) =>
+                user._id === userExist._id ? { ...user, unread: true } : user
+              );
               setUsers(allUsers); // Ensure state updates with new 'unread' status
             }
           }
@@ -114,12 +117,12 @@ export default function Support(props) {
   const selectUser = (user) => {
     allSelectedUser = user;
     setSelectedUser(allSelectedUser);
-    
+
     const userExist = allUsers.find((x) => x._id === user._id);
     if (userExist) {
-        allUsers = allUsers.map((x) =>
-            x._id === userExist._id ? { ...x, unread: false } : x
-    );
+      allUsers = allUsers.map((x) =>
+        x._id === userExist._id ? { ...x, unread: false } : x
+      );
       setUsers(allUsers);
     }
     socket.emit("onUserSelected", user);
@@ -158,7 +161,11 @@ export default function Support(props) {
             .map((user) => (
               <div
                 key={user._id}
-                className={`${user._id === allSelectedUser._id ? 'user-info selected' : "user-info"}`}
+                className={`${
+                  user._id === allSelectedUser._id
+                    ? "user-info selected"
+                    : "user-info"
+                }`}
                 onClick={() => selectUser(user)}
               >
                 <h1 className="block">{user.name}</h1>
