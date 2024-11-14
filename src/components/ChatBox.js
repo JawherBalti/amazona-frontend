@@ -10,7 +10,7 @@ export default function ChatBox() {
   //     ? "http://127.0.0.1:5000"
   //     : window.location.host;
 
-  const ENDPOINT = 'https://amazona-api.vercel.app'
+  const ENDPOINT = 'https://amazona-client.vercel.app'
 
   const [toggleSupport, setToggleSupport] = useState(false);
   const [socket, setSocket] = useState(null);
@@ -64,9 +64,7 @@ export default function ChatBox() {
       history.push("/signin");
     } else {
       setToggleSupport(true);
-      const sk = socketIOClient(ENDPOINT, {
-        withCredentials: true
-      });
+      const sk = socketIOClient(ENDPOINT)
       setSocket(sk);
     }
   };

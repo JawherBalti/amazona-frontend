@@ -14,7 +14,7 @@ export default function Support(props) {
   //     ? "http://127.0.0.1:5000"
   //     : window.location.host;
 
-  const ENDPOINT = 'https://amazona-api.vercel.app'
+  const ENDPOINT = 'https://amazona-client.vercel.app'
 
   const [socket, setSocket] = useState(null);
   const [users, setUsers] = useState([]);
@@ -47,9 +47,7 @@ export default function Support(props) {
     } else {
       if (!socket) {
         //prevents infinite connections
-        const sk = socketIOClient(ENDPOINT, {
-          withCredentials: true
-        });
+        const sk = socketIOClient(ENDPOINT)
         setSocket(sk);
         sk.emit("onLogin", {
           _id: userInfo.data.user._id,
