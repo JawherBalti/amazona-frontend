@@ -18,6 +18,7 @@ body {
 
 footer {
   position: relative;
+  height: 50px;
 }
 
 .mb-3 {
@@ -65,8 +66,9 @@ footer {
 .contact-box {
   position: fixed;
   bottom: 10%;
-  left: 80%;
-  height: 500px;
+  right: 2%;
+  height: 70%;
+  width: 30%;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -75,15 +77,31 @@ footer {
 
 .message-box {
   flex: 1;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.message-container, .user-container {
+  overflow-x: hidden;
+  height: calc(100vh - 100px);
+  max-height: calc(100vh - 180px); /* 100px = navbar height + footer height */
+  overflow-y: auto; /* Adds scrollbar if content exceeds available space */
 }
 
 .chat-form {
   display: flex;
+  justify-content: space-between;
   padding: 5px;
+}
+
+.chat-form input {
+  width: 100%;
 }
 
 .message-info {
   padding: 5px;
+  width: 100%;
 }
 
 .message-info h2 {
@@ -94,19 +112,64 @@ footer {
   margin: 0;
   padding: 0;
   color: #616161;
+  max-width: 90%;
+  word-break: break-all;
 }
 
 .chat-room {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  align-items: flex-start;
 }
 
-.user-container {
-  flex: 0.25;
+.user-info {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-top: 10px;
+border: 0.1rem solid transparent;
+border-radius: 0.5rem;
+padding: 0 10px;
+height:30px
+}
+
+.user-info:hover {
+  background-color: #eeffe0;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: #e0e0ff;
+}
+
+.unread {
+height: 10px;
+width: 10px;
+background-color: #a02020;
+border-radius: 50%;
+}
+
+.online {
+  height: 10px;
+  width: 10px;
+  background-color: #20a020;
+  border-radius: 50%;
+}
+
+.offline {
+  height: 10px;
+  width: 10px;
+  background-color: #a4a4a4;
+  border-radius: 50%;
 }
 
 .chat {
   flex: 0.7;
+}
+
+.user-container {
+  flex: 0.25;
 }
 
 .grid-container {
@@ -120,6 +183,7 @@ footer {
 header {
   grid-area: header;
   background-color: #203040;
+  height: 50px;
 }
 
 main {
@@ -346,7 +410,7 @@ img.large {
 }
 
 .active-page {
-background-color: #f0c040;
+  background-color: #f0c040;
 }
 
 /*ALERT*/
@@ -434,6 +498,11 @@ background-color: #f0c040;
   color: #f08000;
 }
 
+.search,
+.order {
+  margin: 1rem;
+}
+
 /*TABLE*/
 .table {
   width: 100%;
@@ -453,4 +522,17 @@ table td,
 
 .table button {
   margin: 0 0.2rem;
+}
+
+@media only screen and (max-width: 690px) {
+  th,
+  td {
+    font-size: 8px;
+  }
+  td button {
+    padding: 5px;
+    border-radius: 0.5rem;
+    border: 0.1rem #a4a4a4 solid;
+    font-size: 8px !important;
+  }
 }
