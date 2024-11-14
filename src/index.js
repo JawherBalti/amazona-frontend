@@ -18,9 +18,12 @@ rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 />
 
+// export const api = axios.create({
+//   baseURL: 'http://localhost:5000',
+// });
 
 export const api = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://amazona-api.vercel.app',
 });
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, thunk)(createStore);
