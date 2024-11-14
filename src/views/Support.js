@@ -9,12 +9,10 @@ let allMessages = [];
 let allSelectedUser = {};
 
 export default function Support(props) {
-  // const ENDPOINT =
-  //   window.location.host.indexOf("localhost") >= 0
-  //     ? "http://127.0.0.1:5000"
-  //     : window.location.host;
-
-  const ENDPOINT = 'https://amazona-api.vercel.app'
+  const ENDPOINT =
+    window.location.host.indexOf("localhost") >= 0
+      ? "http://127.0.0.1:5000"
+      : window.location.host;
 
   const [socket, setSocket] = useState(null);
   const [users, setUsers] = useState([]);
