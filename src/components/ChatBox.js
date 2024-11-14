@@ -5,10 +5,12 @@ import { userDetailss } from "../actions/user";
 import { useHistory } from "react-router-dom";
 
 export default function ChatBox() {
-  const ENDPOINT =
-    window.location.host.indexOf("localhost") >= 0
-      ? "http://127.0.0.1:5000"
-      : window.location.host;
+  // const ENDPOINT =
+  //   window.location.host.indexOf("localhost") >= 0
+  //     ? "http://127.0.0.1:5000"
+  //     : window.location.host;
+
+  const ENDPOINT = 'https://amazona-api.vercel.app'
 
   const [toggleSupport, setToggleSupport] = useState(false);
   const [socket, setSocket] = useState(null);
