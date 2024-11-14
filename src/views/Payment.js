@@ -7,20 +7,33 @@ export default function Payment(props) {
   const cart = useSelector((state) => state.cartReducer);
   const { shippingAddress, paymentMethod } = cart;
 
+  const signinReducer = useSelector((state) => state.userSignInReducer);
+  const { userInfo } = signinReducer;
+
+  if (!userInfo) {
+    props.history.push("/signin");
+  }
+
   if (!shippingAddress.address) {
     props.history.push("/shipping");
   }
 
-const [paymentMethodName, setPaymentMetodName] = useState(paymentMethod || "PayPal");
+  if (cart.cartItems.length === 0) {
+    props.history.push("/");
+  }
+
+  const [paymentMethodName, setPaymentMetodName] = useState(
+    paymentMethod || "PayPal"
+  );
 
   const dispatch = useDispatch();
 
   const submitHandler = (e) => {
-      e.preventDefault();
-      dispatch(savePaymentMethod(paymentMethodName));
-      localStorage.setItem("paymentMethod", paymentMethod);
-      props.history.push("/placeorder");
-    };
+    e.preventDefault();
+    dispatch(savePaymentMethod(paymentMethodName));
+    localStorage.setItem("paymentMethod", paymentMethod);
+    props.history.push("/placeorder");
+  };
 
   return (
     <div>
