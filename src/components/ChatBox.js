@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import socketIOClient from "socket.io-client";
 import { userDetailss } from "../actions/user";
@@ -25,6 +25,11 @@ export default function ChatBox() {
 
   const dispatch = useDispatch();
 
+  const closeSupportHandler = useCallback(() => {
+    setToggleSupport(false);
+    socket?.disconnect();
+  }, [socket]);
+
   useEffect(() => {
     if (uiMessagesRef.current) {
       uiMessagesRef.current.scrollBy({
@@ -39,28 +44,27 @@ export default function ChatBox() {
     }
     if (socket) {
       socket.emit("onLogin", {
-        _id: userInfo.data.user._id,
-        name: userInfo.data.user.name,
-        isAdmin: user.isAdmin,
+        _id: userInfo?.data?.user._id,
+        name: userInfo?.data?.user.name,
+        isAdmin: user?.isAdmin,
       });
       socket.on("recieveMessage", (data) => {
         setMessages([...messages, { body: data.body, name: data.name }]);
       });
     }
-  }, [dispatch, user, socket, messages]);
+    if (!userInfo) {
+      closeSupportHandler();
+    }
+  }, [dispatch, user, socket, messages, userInfo, closeSupportHandler]);
 
   const openSupportHandler = () => {
-    if (!userInfo) history.push("/signin");
-    else {
-      setToggleSupport(!toggleSupport);
+    if (!userInfo) {
+      history.push("/signin");
+    } else {
+      setToggleSupport(true);
       const sk = socketIOClient(ENDPOINT);
       setSocket(sk);
     }
-  };
-
-  const closeSupportHandler = () => {
-    setToggleSupport(!toggleSupport);
-    socket.disconnect();
   };
 
   const submitHandler = (e) => {
