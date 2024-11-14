@@ -90,11 +90,18 @@ export const orderDeliverReducer = (
 export const myOrderReducer = (state = { orders: [] }, action) => {
   switch (action.type) {
     case MY_ORDER_LIST_REQUEST:
-      return { loading: true };
+      return { ...state, loading: true };
     case MY_ORDER_LIST_SUCCESS:
-      return { loading: false, orders: action.payload };
+      return {
+        ...state,
+        orders: action.payload.orders,
+        page: action.payload.page,
+        pages: action.payload.pages,
+        countOrders: action.payload.countOrders,
+        loading: false,
+      };
     case MY_ORDER_LIST_FAIL:
-      return { loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
@@ -127,7 +134,11 @@ export const orderDeleteReducer = (state = {}, action) => {
     case ORDER_DELETE_SUCCESS:
       return { loadingDelete: false, successDelete: true };
     case ORDER_DELETE_FAIL:
-      return { loadingDelete: false, successDelete: false, errorDelete: action.payload };
+      return {
+        loadingDelete: false,
+        successDelete: false,
+        errorDelete: action.payload,
+      };
     case ORDER_DELETE_RESET:
       return { loadingDelete: false, successDelete: false };
     default:

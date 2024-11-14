@@ -121,26 +121,31 @@ export const deliverOrder = (orderId) => async (dispatch, getState) => {
   }
 };
 
-export const myOrders = () => async (dispatch, getState) => {
-  dispatch({ type: MY_ORDER_LIST_REQUEST });
-  const {
-    userSignInReducer: { userInfo },
-  } = getState();
-  try {
-    const { data } = await api.get(`/api/order/myorder`, {
-      headers: { authorization: `Bearer ${userInfo.data.token}` },
-    });
-    dispatch({ type: MY_ORDER_LIST_SUCCESS, payload: data });
-  } catch (error) {
-    dispatch({
-      type: MY_ORDER_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+export const myOrders =
+  (page, sortBy, order, searchTerm) => async (dispatch, getState) => {
+    dispatch({ type: MY_ORDER_LIST_REQUEST });
+    const {
+      userSignInReducer: { userInfo },
+    } = getState();
+    try {
+      let url = `/api/order/myOrder?page=${page}&sortBy=${sortBy}&order=${order}`;
+      if (searchTerm) {
+        url += `&searchTerm=${searchTerm}`;
+      }
+      const { data } = await api.get(url, {
+        headers: { Authorization: `Bearer ${userInfo.data.token}` },
+      });
+      dispatch({ type: MY_ORDER_LIST_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({
+        type: MY_ORDER_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const allOrderss =
   (page, sortBy, order, searchTerm) => async (dispatch, getState) => {

@@ -4,23 +4,33 @@ import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { myOrders } from "../actions/order";
 import Pagination from "../components/Pagination";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 
 export default function OrderHistory(props) {
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("totalPrice"); // New state for sorting field
+  const [order, setOrder] = useState("asc"); // New state for sorting order
+
   const myOrderList = useSelector((state) => state.myOrderReducer);
-  const { loading, error, orders } = myOrderList;
+  const {
+    orders,
+    loading,
+    error,
+    pages,
+    searchOrderId,
+    searchResultsByTotal,
+    searchPage,
+    searchPages,
+  } = myOrderList;
+
   const userSignIn = useSelector((state) => state.userSignInReducer);
   const { userInfo } = userSignIn;
 
-  const [allMyOrders, setAllMyOrders] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [ordersPerPage, setOrdersPerPage] = useState(9);
+  const { search, pathname } = useLocation();
 
-  const [pageNumberLimit, setpageNumberLimit] = useState(5);
-  const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(5);
-  const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
-
-  const lastOrder = currentPage * ordersPerPage;
-  const firstOrder = lastOrder - ordersPerPage;
+  const sp = new URLSearchParams(search);
+  const page = sp.get("page") || 1;
+  const searchTerm = sp.get("searchTerm");
 
   if (!userInfo) {
     props.history.push("/signin");
@@ -29,37 +39,79 @@ export default function OrderHistory(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(myOrders());
-    if (orders) {
-      setAllMyOrders(orders);
-    }
-  }, [dispatch]);
+    dispatch(myOrders(page, sortBy, order, searchTerm));
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  }, [dispatch,order, page, searchTerm, sortBy]);
+
+  const handleSearch = async () => {
+    props.history.push(`/orderhistory?page=1&searchTerm=${localSearchTerm}`);
+    setLocalSearchTerm("");
   };
 
-  const handleNextbtn = () => {
-    setCurrentPage(currentPage + 1);
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+  };
 
-    if (currentPage + 1 > maxPageNumberLimit) {
-      setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
-      setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
+  const handleOrderChange = (e) => {
+    setOrder(e.target.value);
+  };
+
+  const getDisplayOrders = () => {
+    if (searchOrderId) {
+      return [searchOrderId];
+    } else if (searchResultsByTotal?.length > 0) {
+      return searchResultsByTotal;
+    } else {
+      return orders;
     }
   };
 
-  const handlePrevbtn = () => {
-    setCurrentPage(currentPage - 1);
+  const getCurrentPage = () => {
+    return searchOrderId
+      ? 1
+      : searchResultsByTotal?.length > 0
+      ? searchPage
+      : page;
+  };
 
-    if ((currentPage - 1) % pageNumberLimit === 0) {
-      setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
-      setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
-    }
+  const getTotalPages = () => {
+    return searchOrderId
+      ? 1
+      : searchResultsByTotal?.length > 0
+      ? searchPages
+      : pages;
   };
 
   return (
     <div>
       <h1>Order history</h1>
+      <div className="row mb-3">
+        <div className="row search">
+          <input
+            type="text"
+            value={localSearchTerm}
+            onChange={(e) => setLocalSearchTerm(e.target.value)}
+            placeholder="Search order..."
+            style={{ width: "250px" }}
+          />
+          <button className="primary" onClick={handleSearch}>
+            Search
+          </button>
+        </div>
+        <div className="order">
+          <label>Sort By:</label>
+          <select value={sortBy} onChange={handleSortChange}>
+            <option value="totalPrice">Total</option>
+            <option value="isPaid">Paid</option>
+            <option value="isDelivered">Delivered</option>
+            <option value="createdAt">Creation date</option>
+          </select>
+          <select value={order} onChange={handleOrderChange}>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
+      </div>
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (
@@ -69,18 +121,17 @@ export default function OrderHistory(props) {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Date</th>
               <th>Total</th>
               <th>Paid</th>
               <th>Delivered</th>
+              <th>Created at</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {orders.slice(firstOrder, lastOrder).map((order) => (
+            {getDisplayOrders().map((order) => (
               <tr key={order._id}>
                 <td>{order._id}</td>
-                <td>{order.createdAt.substring(0, 10)}</td>
                 <td>{order.totalPrice.toFixed(2)}</td>
                 <td>
                   {order.isPaid && order.paidAt
@@ -92,6 +143,7 @@ export default function OrderHistory(props) {
                     ? order.deliveredAt?.substring(0, 10)
                     : "Not Delivered"}
                 </td>
+                <td>{order.createdAt.substring(0, 10)}</td>
                 <td>
                   <button
                     type="button"
@@ -108,16 +160,14 @@ export default function OrderHistory(props) {
           </tbody>
         </table>
       )}
-      <Pagination
-        ordersPerPage={ordersPerPage}
-        totalOrders={orders ? orders.length : allMyOrders.length}
-        paginate={paginate}
-        currentPage={currentPage}
-        maxPageNumberLimit={maxPageNumberLimit}
-        minPageNumberLimit={minPageNumberLimit}
-        handleNextbtn={handleNextbtn}
-        handlePrevbtn={handlePrevbtn}
-      ></Pagination>
+        <div>
+          <Pagination
+            page={getCurrentPage()}
+            pages={getTotalPages()}
+            searchTerm={searchTerm}
+            link="orderhistory"
+          />
+        </div>
     </div>
   );
 }
